@@ -1118,3 +1118,39 @@ $(window).on('load', function() {
   }
 
 });
+
+ //set up status layer 
+ var opportunityZones = L.esri.featureLayer({
+  url: 'https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/0',
+  simplifyFactor: 0.5,
+  precision: 5,
+  style: function (feature) {
+    if (feature.properties.STUSAB === "MA") {
+      return { fillOpacity: 0.5};
+    } else if (feature.properties.STUSAB === "MI") {
+      return { fillOpacity: 0.5};
+    } else {
+      return { fillOpacity: 0.5};
+    }
+  }
+  
+}).addTo(map);
+
+
+var cities = L.esri.featureLayer({
+  url: 'https://services1.arcgis.com/hGdibHYSPO59RG1h/ArcGIS/rest/services/L3_TAXPAR_POLY_ASSESS_gdb/FeatureServer/0',
+minZoom: 15,
+style: function (feature) {
+  if (feature.properties.SOURCE === "ASSESS") {
+    return { fillOpacity: 0.2};
+  } else {
+    return { fillOpacity: 0.2};
+  }
+}
+}).addTo(map);
+
+var cityPopTemplate = '<span style="font-size:14px">Owner: {OWNER1}</span> <br> <br>{SITE_ADDR} <br>{CITY} <br>{ZIP} <br> Massachusetts <br>Land Value: {LAND_VAL} <br>Other Value: {OTHER_VAL} <br> Total Value: {TOTAL_VAL} <br>Lot Size: {LOT_SIZE} {LOT_UNITS} <br> List Date: {LS_DATE} <br> List Price: ${LS_PRICE}';
+cities.bindTooltip(function (layer) {
+  return L.Util.template(
+    cityPopTemplate, layer.feature.properties);
+});
